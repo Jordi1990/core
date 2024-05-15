@@ -54,7 +54,7 @@ FLOWS = {
         "apcupsd",
         "apple_tv",
         "aprilaire",
-        "aquacell",
+        "apsystems",
         "aranet",
         "arcam_fmj",
         "arve",
