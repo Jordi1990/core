@@ -1,4 +1,5 @@
 """API for Bold bound to Home Assistant OAuth."""
+
 from aiohttp import ClientSession
 from bold_smart_lock.auth import AbstractAuth
 

@@ -1,4 +1,5 @@
 """Config flow for Bold integration."""
+
 from __future__ import annotations
 
 import logging
@@ -10,8 +11,8 @@ from home_assistant_bluetooth import BluetoothServiceInfo, BluetoothServiceInfoB
 import voluptuous as vol
 
 from homeassistant.components.bluetooth.api import async_discovered_service_info
+from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import CONF_ADDRESS
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_entry_oauth2_flow
 
@@ -42,14 +43,14 @@ class OAuth2FlowHandler(
         """Return logger."""
         return logging.getLogger(__name__)
 
-    async def async_oauth_create_entry(self, data: dict) -> FlowResult:
+    async def async_oauth_create_entry(self, data: dict) -> ConfigFlowResult:
         """Start oauth authentication with bold cloud."""
         data["device"] = self.context["device"]
         return self.async_create_entry(title=self.context["device"]["name"], data=data)
 
     async def async_step_bluetooth(
         self, discovery_info: BluetoothServiceInfoBleak
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the bluetooth discovery step."""
         await self.async_set_unique_id(discovery_info.address)
 
@@ -71,7 +72,7 @@ class OAuth2FlowHandler(
 
     async def async_step_bluetooth_confirm(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Confirm discovery."""
         if user_input is not None:
             current_entries = self._async_current_entries()
@@ -92,7 +93,7 @@ class OAuth2FlowHandler(
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the user step to pick discovered device."""
         if user_input is not None:
             address = user_input[CONF_ADDRESS]
@@ -132,6 +133,7 @@ class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
 
 
+# Move this class to library
 class BoldBluetoothDeviceData(BluetoothData):
     """Data update for Bold Bluetooth devices."""
 
@@ -144,10 +146,18 @@ class BoldBluetoothDeviceData(BluetoothData):
         manufacturer_data: bytes = data.manufacturer_data.get(
             SESAM_MANUFACTURER_ID, b""
         )
+
+        if not manufacturer_data:
+            return
+
         model_id = manufacturer_data[3]
         self.model = "Unknown model"
+        # 194
+        # 83906
         if model_id == 101:
             self.model = "Bold Cylinder"
+        else:
+            return
         self.device_identifier = struct.unpack("<L", manufacturer_data[3:7])[0]
 
         self.set_device_name(f"{self.model} ({self.device_identifier})")

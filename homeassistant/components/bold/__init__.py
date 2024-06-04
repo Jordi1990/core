@@ -1,4 +1,5 @@
 """The Bold integration."""
+
 from __future__ import annotations
 
 import logging
@@ -42,7 +43,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     devices = await bold_api.get_device_permissions()
     address = entry.unique_id
     assert address is not None
-    # data = BoldBluetoothDeviceData()
+
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = {}
 
     device_details: dict[str, str]
@@ -50,14 +51,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if str(device["id"]) == str(entry.data["device"]["id"]):
             device_details = device
 
-    # if device_details is None:
-    #    raise Exception()
-
+    # Check expiry
     handshake: dict[str, str] = await bold_api.get_device_handshake(
-        device_details["id"]
+        int(device_details["id"])
     )
     activate_payload: dict[str, str] = await bold_api.get_activate_device_payload(
-        device_details["id"]
+        int(device_details["id"])
     )
 
     device = BoldBleDevice(
@@ -69,6 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         address,
         entry.data["device"]["model"],
     )
+
     hass.data[DOMAIN][entry.entry_id] = device
 
     @callback
@@ -94,17 +94,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             ),
             bluetooth.BluetoothScanningMode.PASSIVE,
         )
-    )
-
-    @callback
-    def _async_device_unavailable(
-        _service_info: bluetooth.BluetoothServiceInfoBleak,
-    ) -> None:
-        """Handle device not longer being seen by the bluetooth stack."""
-        device.reset_advertisement_state()
-
-    entry.async_on_unload(
-        bluetooth.async_track_unavailable(hass, _async_device_unavailable, address)
     )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
