@@ -162,7 +162,6 @@ INTEGRATIONS_WITHOUT_QUALITY_SCALE_FILE = [
     "aprilaire",
     "aprs",
     "apsystems",
-    "aquacell",
     "aqualogic",
     "aquostv",
     "aranet",

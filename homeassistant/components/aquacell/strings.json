@@ -15,7 +15,11 @@
           "email": "[%key:common::config_flow::data::email%]",
           "password": "[%key:common::config_flow::data::password%]"
         },
-        "description": "Select the brand of the softener and fill in your softener mobile app credentials"
+        "data_description": {
+          "brand": "Brand of the softener.",
+          "email": "Email address used in the mobile app.",
+          "password": "Password used in the mobile app."
+        }
       }
     }
   },
