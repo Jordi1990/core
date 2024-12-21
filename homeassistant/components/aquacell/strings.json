@@ -7,6 +7,11 @@
           "brand": "Brand",
           "email": "[%key:common::config_flow::data::email%]",
           "password": "[%key:common::config_flow::data::password%]"
+        },
+        "data_description": {
+          "brand": "Brand of the softener.",
+          "email": "Email address used in the mobile app.",
+          "password": "Password used in the mobile app."
         }
       }
     },
