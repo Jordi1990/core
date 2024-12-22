@@ -8,5 +8,6 @@
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "loggers": ["aioaquacell"],
+  "quality_scale": "bronze",
   "requirements": ["aioaquacell==0.2.0"]
 }

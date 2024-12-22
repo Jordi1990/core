@@ -17,7 +17,9 @@ rules:
   docs-high-level-description: done
   docs-installation-instructions: done
   docs-removal-instructions: done
-  entity-event-setup: done
+  entity-event-setup:
+    status: exempt
+    comment: No events are registered by the integration.
   entity-unique-id: done
   has-entity-name: done
   runtime-data: done
@@ -73,15 +75,14 @@ rules:
   entity-category: done
   entity-device-class: done
   entity-disabled-by-default:
-    status: todo
-    comment: |
-      Maybe disable wifi strength by default.
+    status: exempt
+    comment: No entities which are noisy or irrelevant.
   entity-translations: done
   exception-translations: done
   icon-translations: done
   reconfiguration-flow:
-    status: todo
-    comment: Implement flow.
+    status: exempt
+    comment: No settings in the configuration flow.
   repair-issues:
     status: exempt
     comment: |
